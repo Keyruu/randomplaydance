@@ -45,6 +45,7 @@ services:
     image: quay.io/keycloak/keycloak:18.0.2
     command:
       - start
+      - --import-realm
       - --auto-build
     environment:
       KEYCLOAK_ADMIN: admin
@@ -61,6 +62,8 @@ services:
       KC_DB_SCHEMA: keycloak
       # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
       #JDBC_PARAMS: "ssl=true"
+    volumes:
+      - ./hasura-realm.json:/opt/keycloak/data/import/hasura-realm.json
     ports:
       - 8081:8080
     depends_on:
