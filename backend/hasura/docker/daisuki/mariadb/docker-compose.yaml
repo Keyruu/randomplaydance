@@ -1,0 +1,17 @@
+version: '3.6'
+
+networks:
+  daisuki:
+    external: true
+
+services:
+  daisuki-mariadb:
+    image: mariadb
+    restart: always
+    networks:
+      - daisuki
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: kpop
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d:ro

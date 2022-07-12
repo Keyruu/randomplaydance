@@ -1,0 +1,3 @@
+table:
+  schema: keycloak
+  name: keycloak_group

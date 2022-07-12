@@ -1,0 +1,11 @@
+table:
+  schema: keycloak
+  name: user_entity
+array_relationships:
+  - name: user_role_mappings
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: keycloak
+          name: user_role_mapping

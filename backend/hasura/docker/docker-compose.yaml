@@ -36,44 +36,42 @@ services:
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
       HASURA_GRAPHQL_LOG_LEVEL: debug
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
+      DAISUKI_DATABASE_URL: postgres://postgres:postgres@host.docker.internal:5444/kpop
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.hasura.rule=Host(`localhost`) && PathPrefix(`/`)"
       - "traefik.http.routers.hasura.entrypoints=web"
-  auth:
-    image: nhost/hasura-auth:latest
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.2
+    command:
+      - start
+      - --auto-build
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_DB: "postgres"
+      KC_DB_URL_DATABASE: "postgres"
+      KC_DB_URL_HOST: postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-secretpgpassword}
+      KC_PROXY: edge
+      KC_DB_SCHEMA: keycloak
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    ports:
+      - 8081:8080
     depends_on:
       - postgres
-      - graphql-engine
-    restart: always
-    environment:
-      AUTH_HOST: '0.0.0.0'
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-secretpgpassword}@postgres:5432/postgres
-      HASURA_GRAPHQL_GRAPHQL_URL: http://graphql-engine:8080/v1/graphql
-      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
-      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
-      AUTH_CLIENT_URL: ${AUTH_CLIENT_URL:-http://localhost:3000}
-      AUTH_SMTP_HOST: mailhog
-      AUTH_SMTP_PORT: 1025
-      AUTH_SMTP_USER: user
-      AUTH_SMTP_PASS: password
-      AUTH_SMTP_SENDER: mail@example.com
-    expose:
-      - 4000
-    healthcheck:
-      disable: true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.middlewares.strip-auth.stripprefix.prefixes=/v1/auth"
-      - "traefik.http.routers.auth.rule=Host(`localhost`) && PathPrefix(`/v1/auth`)"
-      - "traefik.http.routers.auth.middlewares=strip-auth@docker"
-      - "traefik.http.routers.auth.entrypoints=web"
   storage:
     image: nhost/hasura-storage:0.2.1
     depends_on:
       - postgres
       - graphql-engine
       - minio
+      - keycloak
     restart: always
     expose:
       - 8000

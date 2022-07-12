@@ -1,0 +1,16 @@
+table:
+  schema: keycloak
+  name: user_role_mapping
+object_relationships:
+  - name: role
+    using:
+      manual_configuration:
+        remote_table:
+          schema: keycloak
+          name: keycloak_role
+        insertion_order: null
+        column_mapping:
+          role_id: id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id

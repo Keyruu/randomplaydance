@@ -1,0 +1,24 @@
+table:
+  schema: public
+  name: part
+remote_relationships:
+  - definition:
+      to_source:
+        relationship_type: object
+        source: daisuki
+        table:
+          schema: kpop
+          name: app_kpop
+        field_mapping:
+          daisuki_track_id: id
+    name: part_to_daisuki
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - daisuki_track_id
+        - keyruus_opinion
+      filter:
+        keyruus_opinion:
+          _eq: good

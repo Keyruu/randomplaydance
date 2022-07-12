@@ -1,5 +1,5 @@
--- auth schema
-CREATE SCHEMA IF NOT EXISTS auth;
+CREATE SCHEMA IF NOT EXISTS keycloak;
+CREATE SCHEMA IF NOT EXISTS rpd;
 CREATE SCHEMA IF NOT EXISTS storage;
 -- https://github.com/hasura/graphql-engine/issues/3657
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;

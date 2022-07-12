@@ -1,0 +1,3 @@
+table:
+  schema: keycloak
+  name: group_role_mapping

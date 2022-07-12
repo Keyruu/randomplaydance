@@ -1,0 +1,13 @@
+table:
+  schema: kpop
+  name: app_kpop
+object_relationships:
+  - name: artist
+    using:
+      manual_configuration:
+        remote_table:
+          schema: kpop
+          name: app_kpop_group
+        insertion_order: null
+        column_mapping:
+          id_artist: id
