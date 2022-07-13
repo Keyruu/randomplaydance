@@ -5,7 +5,7 @@ networks:
     external: true
 
 services:
-  daisuki-pg:
+  postgres:
     image: postgres:14
     restart: always
     ports:

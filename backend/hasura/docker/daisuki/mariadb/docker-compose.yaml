@@ -5,7 +5,13 @@ networks:
     external: true
 
 services:
-  daisuki-mariadb:
+  fetch:
+    image: fetch
+    build:
+      dockerfile: fetch/Dockerfile
+    volumes:
+      - ./initdb.d:/data/
+  mariadb:
     image: mariadb
     restart: always
     networks:
@@ -15,3 +21,21 @@ services:
       MARIADB_DATABASE: kpop
     volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      fetch:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "--password=${MARIADB_ROOT_PASSWORD}"]
+      timeout: 2s
+      retries: 20
+  pgloader:
+    image: pgloader
+    networks:
+      - daisuki
+    command:
+      - pgloader
+      - mysql://root:${MARIADB_ROOT_PASSWORD}@mariadb:3306/kpop
+      - postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/kpop
+    depends_on:
+      mariadb:
+        condition: service_healthy
