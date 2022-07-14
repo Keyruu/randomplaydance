@@ -1,6 +1,12 @@
 table:
   schema: keycloak
   name: user_entity
+configuration:
+  custom_root_fields:
+    select_by_pk: auth_user
+  custom_name: auth_users
+  column_config: {}
+  custom_column_names: {}
 array_relationships:
   - name: user_role_mappings
     using:

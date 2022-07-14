@@ -1,6 +1,12 @@
 table:
   schema: keycloak
   name: keycloak_role
+configuration:
+  custom_root_fields:
+    select_by_pk: auth_role
+  custom_name: auth_roles
+  column_config: {}
+  custom_column_names: {}
 array_relationships:
   - name: user_role_mapping
     using:

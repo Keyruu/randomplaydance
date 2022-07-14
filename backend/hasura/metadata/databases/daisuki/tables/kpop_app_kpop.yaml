@@ -1,6 +1,12 @@
 table:
   schema: kpop
   name: app_kpop
+configuration:
+  custom_root_fields:
+    select_by_pk: kpop_track
+  custom_name: kpop_tracks
+  column_config: {}
+  custom_column_names: {}
 object_relationships:
   - name: artist
     using:

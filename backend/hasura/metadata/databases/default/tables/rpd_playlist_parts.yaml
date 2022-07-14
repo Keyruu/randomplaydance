@@ -1,0 +1,11 @@
+table:
+  schema: rpd
+  name: playlist_parts
+configuration:
+  custom_root_fields:
+    insert_one: insert_rpd_playlist_part
+    select_by_pk: rpd_playlist_part
+    delete_by_pk: delete_rpd_playlist_part
+    update_by_pk: update_rpd_playlist_part
+  column_config: {}
+  custom_column_names: {}

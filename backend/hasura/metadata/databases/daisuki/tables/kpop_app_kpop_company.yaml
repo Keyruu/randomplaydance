@@ -1,3 +1,8 @@
 table:
   schema: kpop
   name: app_kpop_company
+configuration:
+  custom_root_fields: {}
+  custom_name: kpop_companys
+  column_config: {}
+  custom_column_names: {}

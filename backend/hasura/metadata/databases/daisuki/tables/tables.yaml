@@ -1,8 +1,4 @@
 - "!include kpop_app_kpop.yaml"
-- "!include kpop_app_kpop_agrelation.yaml"
 - "!include kpop_app_kpop_audio.yaml"
 - "!include kpop_app_kpop_company.yaml"
-- "!include kpop_app_kpop_gaondigi.yaml"
 - "!include kpop_app_kpop_group.yaml"
-- "!include kpop_app_kpop_miles.yaml"
-- "!include kpop_app_kpop_ms.yaml"

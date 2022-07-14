@@ -1,5 +1,8 @@
 - "!include keycloak_keycloak_role.yaml"
 - "!include keycloak_user_entity.yaml"
 - "!include keycloak_user_role_mapping.yaml"
+- "!include rpd_parts.yaml"
+- "!include rpd_playlist_parts.yaml"
+- "!include rpd_playlists.yaml"
 - "!include storage_buckets.yaml"
 - "!include storage_files.yaml"

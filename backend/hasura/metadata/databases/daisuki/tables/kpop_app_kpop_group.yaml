@@ -1,3 +1,37 @@
 table:
   schema: kpop
   name: app_kpop_group
+configuration:
+  custom_root_fields: {}
+  custom_name: kpop_artists
+  column_config: {}
+  custom_column_names: {}
+object_relationships:
+  - name: company
+    using:
+      manual_configuration:
+        remote_table:
+          schema: kpop
+          name: app_kpop_company
+        insertion_order: null
+        column_mapping:
+          id_company: id
+array_relationships:
+  - name: audiotracks
+    using:
+      manual_configuration:
+        remote_table:
+          schema: kpop
+          name: app_kpop_audio
+        insertion_order: null
+        column_mapping:
+          id: id_artist
+  - name: tracks
+    using:
+      manual_configuration:
+        remote_table:
+          schema: kpop
+          name: app_kpop
+        insertion_order: null
+        column_mapping:
+          id: id_artist
