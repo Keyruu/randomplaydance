@@ -16,3 +16,26 @@ object_relationships:
         insertion_order: null
         column_mapping:
           id_artist: id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - dislikes
+        - id
+        - id_artist
+        - id_original_artist
+        - likes
+        - recentlikes
+        - recentviews
+        - views
+        - kname
+        - name
+        - name_aka
+        - original_name
+        - regionlocked
+        - tags
+        - vlink
+        - releasedate
+        - lastupdate
+        - publishedon
+      filter: {}

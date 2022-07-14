@@ -35,3 +35,36 @@ array_relationships:
         insertion_order: null
         column_mapping:
           id: id_artist
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - gaondigital_firsts
+        - gaondigital_times
+        - id
+        - id_company
+        - id_country
+        - id_debut
+        - id_parentgroup
+        - miak
+        - sales
+        - yawards_total
+        - yt_followers
+        - alias
+        - fanclub
+        - fname
+        - kname
+        - name
+        - previous_kname
+        - previous_name
+        - social
+        - yawards
+        - date_birth
+        - debut_date
+        - disband
+        - formation
+        - is_collab
+        - issolo
+        - members
+        - miak_level
+      filter: {}

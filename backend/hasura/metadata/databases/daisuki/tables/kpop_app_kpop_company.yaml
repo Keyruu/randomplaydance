@@ -6,3 +6,12 @@ configuration:
   custom_name: kpop_companys
   column_config: {}
   custom_column_names: {}
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - alias
+        - name
+        - site
+      filter: {}
