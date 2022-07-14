@@ -1,3 +1,0 @@
-table:
-  schema: keycloak
-  name: role_attribute

@@ -9,3 +9,56 @@ configuration:
     update_by_pk: update_rpd_playlist_part
   column_config: {}
   custom_column_names: {}
+object_relationships:
+  - name: part
+    using:
+      foreign_key_constraint_on: part_id
+  - name: playlist
+    using:
+      foreign_key_constraint_on: playlist_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        playlist:
+          created_by_id:
+            _eq: X-Hasura-User-Id
+      columns:
+        - part_id
+        - playlist_id
+        - position
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - part_id
+        - playlist_id
+        - position
+        - created_at
+      filter:
+        _or:
+          - playlist:
+              created_by_id:
+                _eq: X-Hasura-User-Id
+          - playlist:
+              public:
+                _eq: true
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - position
+      filter:
+        playlist:
+          created_by_id:
+            _eq: X-Hasura-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      backend_only: false
+      filter:
+        playlist:
+          created_by_id:
+            _eq: X-Hasura-User-Id

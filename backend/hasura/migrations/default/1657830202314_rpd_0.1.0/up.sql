@@ -1,5 +1,6 @@
 
 
+
 CREATE TABLE "rpd"."parts" ("id" serial NOT NULL, "created_by" text NOT NULL, "youtube_id" integer NOT NULL, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), "start_seconds" integer NOT NULL, "end_seconds" integer NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("created_by") REFERENCES "keycloak"."user_entity"("id") ON UPDATE restrict ON DELETE restrict);
 CREATE OR REPLACE FUNCTION "rpd"."set_current_timestamp_updated_at"()
 RETURNS TRIGGER AS $$
@@ -43,3 +44,5 @@ alter table "rpd"."parts" rename column "created_by" to "created_by_id";
 ALTER TABLE "rpd"."parts" ALTER COLUMN "youtube_id" TYPE text;
 
 alter table "rpd"."playlist" rename to "playlists";
+
+alter table "rpd"."playlists" rename column "created_by" to "created_by_id";

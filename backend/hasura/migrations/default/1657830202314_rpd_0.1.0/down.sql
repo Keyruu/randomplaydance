@@ -1,4 +1,7 @@
 
+alter table "rpd"."playlists" rename column "created_by_id" to "created_by";
+
+
 alter table "rpd"."playlists" rename to "playlist";
 
 

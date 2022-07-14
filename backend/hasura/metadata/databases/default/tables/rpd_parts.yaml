@@ -32,3 +32,33 @@ remote_relationships:
         field_mapping:
           youtube_id: vlink
     name: track
+insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      set:
+        created_by_id: x-hasura-User-Id
+      columns:
+        - end_seconds
+        - id
+        - start_seconds
+        - youtube_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - end_seconds
+        - id
+        - start_seconds
+        - created_by_id
+        - youtube_id
+        - created_at
+        - updated_at
+      filter: {}
+delete_permissions:
+  - role: user
+    permission:
+      backend_only: false
+      filter:
+        created_by_id:
+          _eq: X-Hasura-User-Id

@@ -1,3 +1,0 @@
-table:
-  schema: keycloak
-  name: composite_role
