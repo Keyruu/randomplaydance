@@ -68,15 +68,17 @@ services:
       #JDBC_PARAMS: "ssl=true"
     volumes:
       - ./keycloak/hasura-realm.json:/opt/keycloak/data/import/hasura-realm.json
-    ports:
-      - 8081:8080
     depends_on:
       - postgres
     healthcheck:
       test: ["CMD", "curl" ,"http://localhost:8080/auth/realms/hasura"]
-      interval: 15s
+      interval: 5s
       timeout: 15s
-      retries: 3
+      retries: 10
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`localhost`) && PathPrefix(`/keycloak`)"
+      - "traefik.http.routers.keycloak.entrypoints=web"
   storage:
     image: nhost/hasura-storage:0.2.1
     depends_on:

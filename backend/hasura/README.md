@@ -59,3 +59,13 @@ hasura metadata apply --envfile docker/.env
 ```sh
 hasura console --envfile docker/.env
 ```
+
+The following endpoints are now exposed:
+
+- `http://localhost:9695`: Hasura Console
+- `http://localhost:1337/keycloak`: Keycloak
+- `http://localhost:1337/v1/graphql`: Hasura GraphQL endpoint
+- `http://localhost:1337/v1/storage`: Hasura Storage
+
+- `http://localhost:9090`: Traefik dashboad
+- `http://localhost:8025`: Mailhog SMTP testing dashboard
