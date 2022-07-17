@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { login } from '$lib/auth';
+	import { isAuthenticated, user } from '$lib/store/auth';
 </script>
 
 <header>
@@ -77,7 +79,19 @@
 			</ul>
 		</div>
 		<div class="navbar-end">
-			<a class="btn normal-case">Login ➔</a>
+			{#if !$isAuthenticated}
+				<button on:click={() => login()} class="btn normal-case">Login ➔</button>
+			{:else}
+				<div class="avatar placeholder w-16">
+					<div class="bg-neutral-content text-neutral-focus rounded-full w-24">
+						<span class="text-3xl"
+							>{$user.given_name?.charAt(0).toUpperCase()}{$user.family_name
+								?.charAt(0)
+								.toUpperCase()}</span
+						>
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 </header>
