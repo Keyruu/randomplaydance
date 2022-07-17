@@ -47,7 +47,7 @@
 					<li><a>Item 3</a></li>
 				</ul>
 			</div>
-			<a class="btn bg-neutral normal-case"
+			<a class="btn bg-neutral normal-case" href="/"
 				><p
 					class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary"
 				>

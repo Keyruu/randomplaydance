@@ -35,20 +35,22 @@
 	setClient(client);
 </script>
 
-<Header />
+<div class="h-screen flex flex-col">
+	<Header />
 
-<main>
-	<slot />
-</main>
+	<main class="mb-auto">
+		<slot />
+	</main>
 
-<footer class="footer items-center p-4 bg-neutral text-neutral-content">
-	<div class="items-center grid-flow-col">
-		<p>Copyright © 2022 - All right reserved</p>
-	</div>
-	<div class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
-		<a class="w-6 h-6" target="_blank" href="https://discord.gg/9TupBNzUGx"><FaDiscord /> </a>
-	</div>
-</footer>
+	<footer class="footer items-center p-4 bg-neutral text-neutral-content">
+		<div class="items-center grid-flow-col">
+			<p>Copyright © 2022 - All right reserved</p>
+		</div>
+		<div class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+			<a class="w-6 h-6" target="_blank" href="https://discord.gg/9TupBNzUGx"><FaDiscord /> </a>
+		</div>
+	</footer>
+</div>
 
 <style>
 </style>

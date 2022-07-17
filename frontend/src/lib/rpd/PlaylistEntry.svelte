@@ -5,7 +5,7 @@
 	export let index: number;
 </script>
 
-<li
+<a
 	class="
   flex 
   w-2/3 
@@ -23,8 +23,9 @@
   btn-block
   text-lg
   font-normal"
+	href={`/playlist/${playlist.id}`}
 >
 	<div class="m-4 w-1/3">{playlist.name}</div>
 	<div class="m-4 w-1/3">{playlist.created_by.username}</div>
 	<div class="m-4 w-1/3">{dayjs(playlist.created_at).toString()}</div>
-</li>
+</a>

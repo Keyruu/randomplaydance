@@ -40,4 +40,14 @@ async function setAuth(authenticated: boolean) {
   await keycloak.loadUserInfo()
   user.set(keycloak.userInfo as UserInfo)
   isAuthenticated.set(authenticated)
+  refreshToken()
+}
+
+async function refreshToken() {
+  try {
+    await keycloak.updateToken(250)
+    refreshToken()
+  } catch (err) {
+    console.error(err)
+  }
 }
