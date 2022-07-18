@@ -1,26 +1,10 @@
 <script lang="ts">
-	import { gql } from '@apollo/client/core';
+	import type { PlaylistsQuery } from '$lib/graphql/generated/graphql';
+	import { Playlists } from '$lib/graphql/Playlists';
 	import { query } from 'svelte-apollo';
-	import dayjs from 'dayjs';
 	import PlaylistEntry from './PlaylistEntry.svelte';
 
-	const PLAYLISTS = gql`
-		query Playlists {
-			rpd_playlists {
-				id
-				created_at
-				name
-				public
-				updated_at
-				created_by {
-					id
-					username
-				}
-			}
-		}
-	`;
-
-	const playlists = query<any, any>(PLAYLISTS);
+	const playlists = query<PlaylistsQuery, any>(Playlists);
 </script>
 
 <section class="flex-wrap ">
@@ -35,7 +19,7 @@
 				<div class="m-4 w-1/3">Created by:</div>
 				<div class="m-4 w-1/3">Created at:</div>
 			</li>
-			{#each $playlists.data.rpd_playlists as playlist, i}
+			{#each $playlists.data?.rpd_playlists || [] as playlist, i}
 				<PlaylistEntry {playlist} index={i} />
 			{/each}
 		</ul>

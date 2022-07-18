@@ -11,9 +11,15 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
-		"format": "prettier --write --plugin-search-dir=. ."
+		"format": "prettier --write --plugin-search-dir=. .",
+		"graphql-codegen": "graphql-codegen --config codegen.yml"
 	},
 	"devDependencies": {
+		"@graphql-codegen/cli": "2.8.1",
+		"@graphql-codegen/introspection": "2.2.0",
+		"@graphql-codegen/typescript": "2.7.1",
+		"@graphql-codegen/typescript-graphql-files-modules": "2.2.0",
+		"@graphql-codegen/typescript-operations": "2.5.1",
 		"@playwright/test": "^1.22.2",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
@@ -40,6 +46,8 @@
 	"dependencies": {
 		"@apollo/client": "^3.6.9",
 		"@fontsource/fira-mono": "^4.5.0",
+		"@rollup/plugin-graphql": "^1.1.0",
+		"@types/graphql": "^14.5.0",
 		"cookie": "^0.4.1",
 		"dayjs": "^1.11.3",
 		"graphql": "^16.5.0",

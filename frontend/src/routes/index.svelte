@@ -4,28 +4,8 @@
 
 <script lang="ts">
 	import FaSearch from 'svelte-icons/fa/FaSearch.svelte';
-	import { gql } from '@apollo/client/core';
-	import { query } from 'svelte-apollo';
 	import { isAuthenticated } from '$lib/store/auth';
 	import PlaylistList from '$lib/rpd/PlaylistList.svelte';
-
-	const PLAYLISTS = gql`
-		query Playlists {
-			rpd_playlists {
-				id
-				created_at
-				name
-				public
-				updated_at
-				created_by {
-					id
-					username
-				}
-			}
-		}
-	`;
-
-	const playlists = query(PLAYLISTS);
 </script>
 
 <svelte:head>

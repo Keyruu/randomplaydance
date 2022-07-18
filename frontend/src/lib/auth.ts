@@ -45,8 +45,12 @@ async function setAuth(authenticated: boolean) {
 
 async function refreshToken() {
   try {
-    await keycloak.updateToken(250)
-    refreshToken()
+    setTimeout(async () => {
+      const updated = await keycloak.updateToken(200)
+      console.log("updatedToken", updated)
+      if (keycloak.idToken && updated) localStorage.setItem("idToken", keycloak.idToken)
+      refreshToken()
+    }, 250000);
   } catch (err) {
     console.error(err)
   }

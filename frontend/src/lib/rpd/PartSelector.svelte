@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Modal from '$lib/components/Modal.svelte';
+	import { getMinuteDisplay } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	import YouTubePlayer from 'youtube-player';
@@ -32,6 +34,8 @@
 		}
 	}
 
+	export let modalId: string;
+
 	export let videoId: string;
 	export let modalOpen: boolean;
 
@@ -42,8 +46,16 @@
 	}
 </script>
 
-<div id="ytplayer" />
-<button class="btn" on:click={setStartTime}>Set Start Time</button>
-<p>{startSeconds}</p>
-<button class="btn" on:click={setEndTime}>Set End Time</button>
-<p>{endSeconds}</p>
+<div class="flex justify-center items-center flex-wrap">
+	<div id="ytplayer" class="m-4" />
+	<div class="flex flex-row items-center">
+		<button class="btn btn-primary m-2" on:click={setStartTime}>Set Start</button>
+		<p class="">{getMinuteDisplay(startSeconds)}</p>
+		&nbsp;-&nbsp;
+		<p>{getMinuteDisplay(endSeconds)}</p>
+		<button class="btn btn-primary m-2" on:click={setEndTime}>Set End</button>
+	</div>
+	<div class="absolute right-0 bottom-0 m-4">
+		<label for={modalId} class="btn btn-info">Submit</label>
+	</div>
+</div>
