@@ -23,14 +23,15 @@ array_relationships:
           name: playlist_parts
 remote_relationships:
   - definition:
-      to_source:
-        relationship_type: object
-        source: daisuki
-        table:
-          schema: kpop
-          name: app_kpop
-        field_mapping:
-          youtube_id: vlink
+      remote_field:
+        kpop_tracks:
+          arguments:
+            where:
+              vlink:
+                _eq: $youtube_id
+      hasura_fields:
+        - youtube_id
+      remote_schema: daisuki
     name: track
 insert_permissions:
   - role: user

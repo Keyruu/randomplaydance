@@ -17,6 +17,17 @@ object_relationships:
         insertion_order: null
         column_mapping:
           id_artist: id
+remote_relationships:
+  - definition:
+      to_source:
+        relationship_type: array
+        source: default
+        table:
+          schema: rpd
+          name: parts
+        field_mapping:
+          vlink: youtube_id
+    name: rpd_parts
 select_permissions:
   - role: user
     permission:
