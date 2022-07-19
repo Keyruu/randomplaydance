@@ -19,7 +19,19 @@ export const PartSearch = gql`
 
 export const DaisukiSearch = gql`
   query DaisukiSearch($search: String) {
-    kpop_tracks(where: {_and: {_or: [{name: {_ilike: $search}}, {original_name: {_ilike: $search}}, {artist: {name: {_ilike: $search}}}]}, id_parent: {_eq: 0}}, limit: 10, order_by: {views: desc}) {
+    kpop_tracks(
+      where: {
+        _and: {
+          _or: [
+            {name: {_ilike: $search}},
+            {original_name: {_ilike: $search}},
+            {artist: {name: {_ilike: $search}}}
+          ]
+        }, 
+        id_parent: {_eq: 0}}, 
+      limit: 10, 
+      order_by: {views: desc}
+    ) {
       vlink
       name
       artist {

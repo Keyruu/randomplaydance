@@ -1,12 +1,14 @@
 <script lang="ts">
+	import { CreatePart } from '$lib/graphql/CreatePart';
+
 	import { getMinuteDisplay } from '$lib/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { mutation } from 'svelte-apollo';
 
 	const dispatch = createEventDispatcher();
 
 	export let track: { name: string; artist?: { name: string } | null };
 	export let youtubeId: string;
-	export let partId: number = -1;
 	export let range: { startSeconds: number; endSeconds: number } = {
 		startSeconds: -1,
 		endSeconds: -1

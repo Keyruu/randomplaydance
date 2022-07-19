@@ -6218,6 +6218,24 @@ export type Uuid_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['uuid']>>;
 };
 
+export type AddPartToPlaylistMutationVariables = Exact<{
+  part_id?: InputMaybe<Scalars['Int']>;
+  playlist_id?: InputMaybe<Scalars['Int']>;
+  position?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type AddPartToPlaylistMutation = { __typename?: 'mutation_root', insert_rpd_playlist_part?: { __typename?: 'rpd_playlist_parts', id: number } | null };
+
+export type CreatePartMutationVariables = Exact<{
+  end_seconds?: InputMaybe<Scalars['Int']>;
+  start_seconds?: InputMaybe<Scalars['Int']>;
+  youtube_id?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreatePartMutation = { __typename?: 'mutation_root', insert_rpd_part?: { __typename?: 'rpd_parts', id: number } | null };
+
 export type PartSearchQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']>;
 }>;
