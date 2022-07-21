@@ -51,6 +51,9 @@ services:
     command:
       - start
       - --import-realm
+      - --spi-theme-static-max-age=-1
+      - --spi-theme-cache-themes=false
+      - --spi-theme-cache-templates=false
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -68,6 +71,8 @@ services:
       #JDBC_PARAMS: "ssl=true"
     volumes:
       - ./keycloak/hasura-realm.json:/opt/keycloak/data/import/hasura-realm.json
+      - ./keycloak/themes/internmatch:/opt/keycloak/themes/internmatch
+      - ./keycloak/themes/genny_base:/opt/keycloak/themes/genny_base
     depends_on:
       - postgres
     healthcheck:
