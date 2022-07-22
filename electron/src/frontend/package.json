@@ -1,8 +1,8 @@
 {
-  "name": "menuki-electron-app",
-  "productName": "menuki-electron-app",
-  "description": "menuki electron app",
-  "author": "Lucas Rott <lucas.rott@exentra.de",
+  "name": "memento-svelte-electron-typescript",
+  "productName": "memento-svelte-electron-typescript",
+  "description": "Template to create a desktop app with Svelte, Electron and TypeScript (with electron-updater, electron-reload and electron-builder)",
+  "author": "Samuele de Tomasi <samuele@stranianelli.com>",
   "license": "MIT",
   "version": "0.0.26",
   "main": "dist/main.js",
@@ -29,9 +29,9 @@
     "@tsconfig/svelte": "^3.0.0",
     "@types/fluent-ffmpeg": "^2.1.20",
     "autoprefixer": "^10.4.7",
+
     "electron": "^19.0.4",
     "electron-builder": "^23.0.3",
-    "mp3-duration": "^1.1.0",
     "nodemon": "^2.0.16",
     "playwright": "^1.22.2",
     "postcss": "^8.4.14",
@@ -56,17 +56,24 @@
     "@el3um4s/svelte-titlebar": "^0.0.11",
     "@el3um4s/to-try": "^0.0.5",
     "ansi-regex": "^6.0.1",
-    "daisyui": "^2.19.1",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-updater": "^5.0.1",
     "fluent-ffmpeg": "^2.1.2",
-    "sirv-cli": "^2.0.2"
+    "sirv-cli": "^2.0.2",
+    "daisyui": "^2.19.1"
   },
   "build": {
     "appId": "memento-set",
     "directories": {
       "output": "out"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "el3um4s",
+        "repo": "memento-svelte-electron-typescript"
+      }
+    ],
     "win": {
       "target": [
         "nsis"
@@ -76,7 +83,8 @@
     "nsis": {
       "installerIcon": "icon.ico",
       "uninstallerIcon": "icon.ico",
-      "uninstallDisplayName": "menuki-electron-app",
+      "uninstallDisplayName": "Memento TES (Svelte+Electron+TypeScript)",
+      "license": "license.txt",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }

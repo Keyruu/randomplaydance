@@ -61,6 +61,12 @@
 					><div class="w-4 h-4"><FaPlus /></div>
 					&nbsp; Add Part</label
 				>
+				<button
+					class="btn btn-primary m-4"
+					on:click={() =>
+						navigator.clipboard.writeText(JSON.stringify($playlistWithParts.data?.rpd_playlist))}
+					>Copy Playlist</button
+				>
 
 				<!-- Put this part before </body> tag -->
 				<input bind:checked={modal} type="checkbox" id={partSelectorModalId} class="modal-toggle" />

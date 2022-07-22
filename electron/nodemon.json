@@ -1,0 +1,5 @@
+{
+  "watch": ["src/electron/"],
+  "exec": "yarn dev",
+  "ext": "js, json, ts, proto, css, png, jpeg, jpg, ico"
+}

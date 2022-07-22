@@ -1,0 +1,9 @@
+{
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "compilerOptions": {
+      "target": "esnext",
+    },
+    "lib": ["esnext", "dom"],
+    "typeAcquisition": {},
+    "include": ["*.ts", "*.d.ts", "*.svelte", "types/global.d.ts"]
+}
