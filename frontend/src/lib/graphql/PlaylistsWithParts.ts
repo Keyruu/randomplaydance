@@ -9,6 +9,8 @@ export const PlaylistWithParts = gql`
       public
       updated_at
       playlist_parts {
+        id
+        position
         part {
           id
           start_seconds

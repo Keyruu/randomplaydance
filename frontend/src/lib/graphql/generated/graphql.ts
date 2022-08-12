@@ -1911,7 +1911,7 @@ export type Kpop_Artists_Bool_Exp = {
 /** unique or primary key constraints on table "kpop.app_kpop_group" */
 export enum Kpop_Artists_Constraint {
   /** unique or primary key constraint on columns "id" */
-  Idx_17301Primary = 'idx_17301_primary'
+  Idx_18261Primary = 'idx_18261_primary'
 }
 
 /** input type for incrementing numeric columns in table "kpop.app_kpop_group" */
@@ -2504,9 +2504,9 @@ export type Kpop_Audiotracks_Bool_Exp = {
 /** unique or primary key constraints on table "kpop.app_kpop_audio" */
 export enum Kpop_Audiotracks_Constraint {
   /** unique or primary key constraint on columns "id" */
-  Idx_17272Primary = 'idx_17272_primary',
+  Idx_18232Primary = 'idx_18232_primary',
   /** unique or primary key constraint on columns "vlink" */
-  Idx_17272Vlink = 'idx_17272_vlink'
+  Idx_18232Vlink = 'idx_18232_vlink'
 }
 
 /** input type for incrementing numeric columns in table "kpop.app_kpop_audio" */
@@ -3014,7 +3014,7 @@ export type Kpop_Companys_Bool_Exp = {
 /** unique or primary key constraints on table "kpop.app_kpop_company" */
 export enum Kpop_Companys_Constraint {
   /** unique or primary key constraint on columns "id" */
-  Idx_17289Primary = 'idx_17289_primary'
+  Idx_18249Primary = 'idx_18249_primary'
 }
 
 /** input type for incrementing numeric columns in table "kpop.app_kpop_company" */
@@ -3328,9 +3328,9 @@ export type Kpop_Tracks_Bool_Exp_Remote_Rel_Rpd_Partstrack = {
 /** unique or primary key constraints on table "kpop.app_kpop" */
 export enum Kpop_Tracks_Constraint {
   /** unique or primary key constraint on columns "id" */
-  Idx_17249Primary = 'idx_17249_primary',
+  Idx_18209Primary = 'idx_18209_primary',
   /** unique or primary key constraint on columns "vlink" */
-  Idx_17249Vlink = 'idx_17249_vlink'
+  Idx_18209Vlink = 'idx_18209_vlink'
 }
 
 /** input type for incrementing numeric columns in table "kpop.app_kpop" */
@@ -6244,7 +6244,7 @@ export type PartSearchQueryVariables = Exact<{
 export type PartSearchQuery = { __typename?: 'query_root', rpd_parts: Array<{ __typename?: 'rpd_parts', id: number, youtube_id: string, start_seconds: number, end_seconds: number, track: Array<{ __typename?: 'kpop_tracks', name: string, artist?: { __typename?: 'kpop_artists', name: string } | null }> }> };
 
 export type DaisukiSearchQueryVariables = Exact<{
-  search?: InputMaybe<Scalars['String']>;
+  search_exp: Kpop_Tracks_Bool_Exp;
 }>;
 
 
@@ -6260,4 +6260,4 @@ export type PlaylistWithPartsQueryVariables = Exact<{
 }>;
 
 
-export type PlaylistWithPartsQuery = { __typename?: 'query_root', rpd_playlist?: { __typename?: 'rpd_playlists', id: number, created_at: any, name: string, public: boolean, updated_at: any, playlist_parts: Array<{ __typename?: 'rpd_playlist_parts', part: { __typename?: 'rpd_parts', id: number, start_seconds: number, end_seconds: number, youtube_id: string, created_at: any, updated_at: any, track: Array<{ __typename?: 'kpop_tracks', name: string, artist?: { __typename?: 'kpop_artists', name: string } | null }> } }>, created_by: { __typename?: 'auth_users', id: string, username?: string | null } } | null };
+export type PlaylistWithPartsQuery = { __typename?: 'query_root', rpd_playlist?: { __typename?: 'rpd_playlists', id: number, created_at: any, name: string, public: boolean, updated_at: any, playlist_parts: Array<{ __typename?: 'rpd_playlist_parts', id: number, position: number, part: { __typename?: 'rpd_parts', id: number, start_seconds: number, end_seconds: number, youtube_id: string, created_at: any, updated_at: any, track: Array<{ __typename?: 'kpop_tracks', name: string, artist?: { __typename?: 'kpop_artists', name: string } | null }> } }>, created_by: { __typename?: 'auth_users', id: string, username?: string | null } } | null };

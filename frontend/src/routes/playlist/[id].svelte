@@ -7,9 +7,11 @@
 	import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import FaSearch from 'svelte-icons/fa/FaSearch.svelte';
+	import { flip } from 'svelte/animate';
 	import type {
 		PlaylistWithPartsQuery,
-		PlaylistWithPartsQueryVariables
+		PlaylistWithPartsQueryVariables,
+		Rpd_Playlists
 	} from '$lib/graphql/generated/graphql';
 	import { PlaylistWithParts } from '$lib/graphql/PlaylistsWithParts';
 	import PartSearch from '$lib/rpd/PartSearch.svelte';
@@ -31,10 +33,56 @@
 	let startSeconds = -1;
 	let endSeconds = -1;
 
+	let copiedPlaylist: Rpd_Playlists;
+
 	const partSelectorModalId = 'partSelectorModal';
 
-	function refetch() {
-		playlistWithParts.refetch();
+	playlistWithParts.subscribe((p) => {
+		if (p.data) {
+			copiedPlaylist = JSON.parse(JSON.stringify(p.data?.rpd_playlist));
+		}
+	});
+
+	let hovering = -1;
+
+	const drop = (
+		event: DragEvent & {
+			currentTarget: EventTarget & HTMLLIElement;
+		},
+		target: number
+	) => {
+		console.log(event, target);
+		event.dataTransfer!.dropEffect = 'move';
+		const start = parseInt(event.dataTransfer!.getData('text/plain'));
+		const newParts = copiedPlaylist.playlist_parts;
+
+		if (start < target) {
+			newParts.splice(target + 1, 0, newParts[start]);
+
+			newParts.splice(start, 1);
+		} else {
+			newParts.splice(target, 0, newParts[start]);
+			newParts.splice(start + 1, 1);
+
+			// newParts[start].position = start;
+			// newParts[target].position = target;
+		}
+
+		copiedPlaylist.playlist_parts = newParts;
+		hovering = -1;
+	};
+
+	const dragstart = (event: DragEvent, i: number) => {
+		console.log(event, i);
+		event.dataTransfer!.effectAllowed = 'move';
+		event.dataTransfer!.dropEffect = 'move';
+		const start = i;
+		event.dataTransfer!.setData('text/plain', start.toString());
+	};
+
+	async function refetch() {
+		await playlistWithParts.refetch();
+		copiedPlaylist = JSON.parse(JSON.stringify($playlistWithParts.data?.rpd_playlist));
 	}
 </script>
 
@@ -117,17 +165,51 @@
 					{/if}
 				</Modal>
 			</div>
-			<div class="w-6/12">
-				{#each $playlistWithParts.data?.rpd_playlist?.playlist_parts || [] as playlist_part, i}
-					<Part
-						range={{
-							startSeconds: playlist_part.part.start_seconds,
-							endSeconds: playlist_part.part.end_seconds
-						}}
-						track={playlist_part.part.track[0]}
-						youtubeId={playlist_part.part.youtube_id}
-					/>
-				{/each}
+			<div class="w-6/12 bg-neutral-focus rounded-lg shadow-lg m-4">
+				<ol>
+					{#each copiedPlaylist.playlist_parts || [] as playlist_part, i (playlist_part.id)}
+						<li
+							class="
+								flex
+								flex-row
+								items-center
+								m-2
+								odd:bg-primary
+								even:bg-neutral/90
+								rounded-xl
+								shadow-2xl 
+								odd:hover:bg-primary-focus
+								even:hover:bg-neutral-focus/90
+								hover:cursor-pointer
+								odd:text-primary-content
+								even:text-neutral-content
+							"
+							animate:flip
+							draggable={true}
+							on:dragstart={(event) => dragstart(event, i)}
+							on:drop|preventDefault={(event) => drop(event, i)}
+							ondragover="return false"
+							on:dragenter={() => (hovering = i)}
+							class:bg-success={hovering === i}
+						>
+							<p class="my-1 mx-4 w-1/12">{playlist_part.position}</p>
+							<p class="">
+								{playlist_part.part.track[0].name}&nbsp;-&nbsp;
+								{playlist_part.part.track[0].artist?.name}
+							</p>
+						</li>
+						<!--
+							<Part
+							range={{
+								startSeconds: playlist_part.part.start_seconds,
+								endSeconds: playlist_part.part.end_seconds
+							}}
+							track={playlist_part.part.track[0]}
+							youtubeId={playlist_part.part.youtube_id}
+						/>
+						-->
+					{/each}
+				</ol>
 			</div>
 		</div>
 	{/if}

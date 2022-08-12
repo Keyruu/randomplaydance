@@ -4,6 +4,7 @@
 	import type {
 		DaisukiSearchQuery,
 		DaisukiSearchQueryVariables,
+		Kpop_Tracks_Bool_Exp,
 		PartSearchQuery,
 		PartSearchQueryVariables
 	} from '$lib/graphql/generated/graphql';
@@ -17,20 +18,35 @@
 	let youtubeSearchActive = false;
 	let activeSearchTab = 'parts';
 	let search = '';
+	let searchExp: Kpop_Tracks_Bool_Exp = { _or: [] };
 
 	const partSearch = query<PartSearchQuery, PartSearchQueryVariables>(PartSearch, {
 		variables: { search: `%${search}%` }
 	});
 
 	const daisukiSearch = query<DaisukiSearchQuery, DaisukiSearchQueryVariables>(DaisukiSearch, {
-		variables: { search: `%${search}%` }
+		variables: { search_exp: {} }
 	});
+
+	function orFilter(searchTerm: string): Kpop_Tracks_Bool_Exp {
+		return {
+			_or: [
+				{ name: { _ilike: `%${searchTerm}%` } },
+				{ artist: { name: { _ilike: `%${searchTerm}%` } } }
+			]
+		};
+	}
 
 	$: {
 		if (activeSearchTab === 'parts') {
 			partSearch.refetch({ search: `%${search}%` });
 		} else if (activeSearchTab === 'new') {
-			daisukiSearch.refetch({ search: `%${search}%` });
+			const orFilters: Kpop_Tracks_Bool_Exp[] = [];
+			const searchTerms = search.split(' ');
+			for (const searchTerm of searchTerms) {
+				orFilters.push(orFilter(searchTerm));
+			}
+			daisukiSearch.refetch({ search_exp: { _and: orFilters } });
 		} else if (activeSearchTab === 'youtube') {
 			console.log('How did you get here?');
 		}
