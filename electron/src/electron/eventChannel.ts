@@ -6,7 +6,9 @@ export const EVENT_CHANNEL = {
     DOWNLOAD: {
       START: "ffmpeg:download-start",
       END: "ffmpeg:download-end",
-      PROGRESS: "ffmpeg:download-progress"
+      PROGRESS: "ffmpeg:download-progress",
+      ERROR: "ffmpeg:download-error",
+      RETRY: "ffmpeg:download-retry"
     },
     MERGE: {
       START: "ffmpeg:merge-start",

@@ -34,10 +34,16 @@
         ...parts,
         {
           part: object,
-          progress: 0,
+          progress: 0.1,
           finished: false,
+          failed: false,
         },
       ];
+    });
+
+    window.electron.ffmpeg.download.onError((object) => {
+      console.log(object.error, object.part);
+      parts.find((part) => part.part.id === object.part.id).failed = true;
     });
 
     window.electron.ffmpeg.download.onEnd((part: any) => {
@@ -64,6 +70,9 @@
   async function invokeDownload() {
     console.log("click");
     const playlist = JSON.parse(text);
+    mergeFinished = false;
+    mergeStarted = false;
+    parts = [];
     try {
       loading = true;
       await window.electron.main.start(playlist.playlist_parts);

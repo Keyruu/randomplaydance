@@ -13,7 +13,9 @@ contextBridge.exposeInMainWorld(
       download: {
         onStart: (fn: (part: any) => void) => on(EVENT_CHANNEL.FFMPEG.DOWNLOAD.START, fn),
         onEnd: (fn: (part: any) => void) => on(EVENT_CHANNEL.FFMPEG.DOWNLOAD.END, fn),
-        onProgress: (fn: (progressPart: any) => void) => on(EVENT_CHANNEL.FFMPEG.DOWNLOAD.PROGRESS, fn)
+        onProgress: (fn: (progressPart: any) => void) => on(EVENT_CHANNEL.FFMPEG.DOWNLOAD.PROGRESS, fn),
+        onError: (fn: (progressPart: any) => void) => on(EVENT_CHANNEL.FFMPEG.DOWNLOAD.ERROR, fn),
+        retry: (part: any) => ipcRenderer.send(EVENT_CHANNEL.FFMPEG.DOWNLOAD.RETRY, part)
       },
       merge: {
         onStart: (fn: () => void) => on(EVENT_CHANNEL.FFMPEG.MERGE.START, fn),

@@ -10,6 +10,8 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, shell } from 'electron';
 import { EVENT_CHANNEL } from './eventChannel';
 import mp3Duration from 'mp3-duration'
+import { downloadParts } from './download';
+import { merge } from './merge';
 // import squirrel from 'electron-squirrel-startup'
 
 // // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -44,8 +46,9 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  ipcMain.handle(EVENT_CHANNEL.MAIN.START, downloadYoutubeVideo)
+  ipcMain.handle(EVENT_CHANNEL.MAIN.START, downloadAndMerge)
   ipcMain.on(EVENT_CHANNEL.SHOW_MERGED_FILE, () => shell.showItemInFolder(`${TMP_DIR}/merged.mp3`))
+
 
   createWindow();
   app.on('activate', function () {
@@ -65,13 +68,11 @@ app.on('window-all-closed', () => {
 });
 
 export const TMP_DIR = "./tmp"
-const PARTS_DIR = `${TMP_DIR}/parts`
+export const PARTS_DIR = `${TMP_DIR}/parts`
 
-async function writeBatchFile(parts: any) {
-  return fsProm.writeFile(`${TMP_DIR}/batch.txt`, parts.flatMap((part: any) => part.youtube_id).join('\n'))
-}
 
-async function downloadYoutubeVideo(event: IpcMainInvokeEvent, playlist_parts: any) {
+
+async function downloadAndMerge(event: IpcMainInvokeEvent, playlist_parts: any) {
   try {
     const parts = playlist_parts.flatMap((playlist_part: any) => playlist_part.part)
     console.log()
@@ -84,8 +85,8 @@ async function downloadYoutubeVideo(event: IpcMainInvokeEvent, playlist_parts: a
       fs.mkdirSync(PARTS_DIR);
     }
 
-    const files = await fsProm.readdir(PARTS_DIR)
-    const mp3Ids = (files.length ? [] : files).flatMap((mp3: string) => parseInt(path.parse(mp3).name))
+    const files = await (await fsProm.readdir(PARTS_DIR)).filter((file: string) => file.includes(".mp3"))
+    const mp3Ids = (files.length === 0 ? [] : files).flatMap((mp3: string) => parseInt(path.parse(mp3).name))
     const mp3Durations: Map<number, number> = new Map()
 
     const uniqueParts = parts.filter((part: any, index: number, self: any) =>
@@ -102,7 +103,7 @@ async function downloadYoutubeVideo(event: IpcMainInvokeEvent, playlist_parts: a
     const filteredMp3Ids = mp3Ids.filter((id: number) => {
       const part = uniqueParts.find((part: any) => part.id === id)
       if (!part) return false
-      console.log(mp3Durations.get(id) === (part.end_seconds - part.start_seconds))
+      console.log(mp3Durations.get(id), (part.end_seconds - part.start_seconds))
       return mp3Durations.get(id) === (part.end_seconds - part.start_seconds)
     })
 
@@ -121,77 +122,4 @@ async function downloadYoutubeVideo(event: IpcMainInvokeEvent, playlist_parts: a
   } catch (err) {
     console.error(err)
   }
-}
-
-async function downloadParts(filteredParts: any, event: IpcMainInvokeEvent, playlist_parts: any) {
-  let queue: any[] = []
-
-  await writeBatchFile(filteredParts);
-
-  const stdout = await exec(path.join(__dirname, "lib", "mac", "python/bin/python3") + " " + path.join(__dirname, "lib", "mac", "youtube-dl") + ` --get-duration -g --batch-file=${TMP_DIR}/batch.txt`);
-  const stdoutArray = stdout.stdout.split("\n");
-  console.log(stdout);
-  for (let i = 0; i < filteredParts.length; i++) {
-    const durationString = stdoutArray[i * 3 + 2];
-    const durationParts = durationString.split(':');
-    const duration = parseInt(durationParts[0]) * 60 + parseInt(durationParts[1]);
-
-    ffmpeg()
-      .input(stdoutArray[i * 3 + 1])
-      .setStartTime(filteredParts[i].start_seconds)
-      .setDuration(filteredParts[i].end_seconds - filteredParts[i].start_seconds)
-      .on('start', function () {
-        console.log(`Started for youtube id: ${filteredParts[i].youtube_id}`);
-        mainWindow.webContents.send('ffmpeg:download-start', filteredParts[i]);
-        queue.push(filteredParts[i].id);
-      })
-      .on('end', function () {
-        console.log(`Finished for youtube id: ${filteredParts[i].youtube_id}`);
-        event.sender.send('ffmpeg:download-end', filteredParts[i]);
-        queue.splice(queue.indexOf(filteredParts[i].id), 1);
-        if (queue.length === 0) {
-          merge(event, playlist_parts);
-        }
-      })
-      .on('progress', (progress: any) => {
-        console.log(`Progress ${progress.percent}% for youtube id: ${filteredParts[i].youtube_id}`);
-        event.sender.send('ffmpeg:download-progress', {
-          progress: (progress.percent * (duration /
-            (filteredParts[i].end_seconds - filteredParts[i].start_seconds))), part: filteredParts[i]
-        });
-      })
-      .save(`${PARTS_DIR}/${filteredParts[i].id}.mp3`);
-  }
-}
-
-async function merge(event: IpcMainInvokeEvent, playlist_parts: any) {
-  console.log("merge!", playlist_parts)
-  let duration = 0
-  let firstDuration = playlist_parts[0].part.end_seconds - playlist_parts[0].part.start_seconds
-  const merged = ffmpeg()
-  merged
-    .on('codecData', function (data: any) {
-      const durationSplit = data.duration.split(':')
-      firstDuration += (parseInt(durationSplit[1]) * 60) + parseInt(durationSplit[2])
-    })
-    .on('start', function () {
-      console.log(`Started for merge`)
-      event.sender.send(EVENT_CHANNEL.FFMPEG.MERGE.START)
-    })
-    .on('end', function () {
-      console.log(`Finished for merge`)
-      event.sender.send(EVENT_CHANNEL.FFMPEG.MERGE.END)
-    })
-    .on('progress', (progress: any) => {
-      if (firstDuration !== 0 && duration !== 0) {
-        console.log(`Progress ${progress.percent / ((duration / firstDuration) * 2)}% for merge`)
-        event.sender.send(EVENT_CHANNEL.FFMPEG.MERGE.PROGRESS, progress.percent / ((duration / firstDuration) * 2))
-      }
-    })
-  for (const playlist_part of playlist_parts) {
-    duration += playlist_part.part.end_seconds - playlist_part.part.start_seconds
-    console.log(`${PARTS_DIR}/${playlist_part.part.id}.mp3`)
-    merged.input(`${PARTS_DIR}/${playlist_part.part.id}.mp3`)
-  }
-  merged.mergeToFile("./tmp/merged.mp3")
 }

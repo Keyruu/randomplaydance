@@ -11,10 +11,18 @@
     <button class="btn btn-primary btn-sm m-4">
       Download: {part.part.id} Youtube-Id: {part.part.youtube_id}
     </button>
+    {#if part.failed}
+      <button
+        class="btn btn-accent"
+        on:click={() => window.electron.ffmpeg.download.retry(part)}
+        >Retry</button
+      >
+    {/if}
     <progress
       class="progress progress-primary h-6 w-56 m-4"
       class:progress-success={part.finished}
-      value={part.finished ? 100 : Math.floor(part.progress)}
+      class:progress-error={part.failed}
+      value={part.finished || part.failed ? 100 : Math.floor(part.progress)}
       max="100"
     />
   {/each}
