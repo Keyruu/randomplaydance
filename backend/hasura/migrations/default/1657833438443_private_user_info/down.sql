@@ -1,1 +1,0 @@
-DROP VIEW keycloak.user_private;

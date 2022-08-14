@@ -1,6 +1,6 @@
 - name: daisuki
   definition:
-    url: http://host.docker.internal:8999/v1/graphql
+    url: http://daisuki-graphql-engine:8080/v1/graphql
     timeout_seconds: 60
     headers:
       - value: hello123

@@ -1,0 +1,3 @@
+table:
+  schema: auth
+  name: user_providers

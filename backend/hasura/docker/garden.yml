@@ -1,0 +1,121 @@
+---
+kind: Module
+type: container
+name: graphql-engine
+image: hasura/graphql-engine:v2.8.3
+varfile: .env
+services:
+  - name: graphql-engine
+    ports:
+      - name: http
+        containerPort: 8080
+    ingresses:
+      - path: /
+        port: http
+    env:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      HASURA_GRAPHQL_JWT_SECRET: ${var.HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${var.HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
+      HASURA_GRAPHQL_LOG_LEVEL: debug
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      DAISUKI_DATABASE_URL: postgres://postgres:postgres@host.docker.internal:5444/kpop
+    dependencies:
+      - postgres
+
+---
+kind: Module
+type: container
+name: postgres
+dockerfile: postgres/Dockerfile
+services:
+  - name: postgres
+    env:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - name: postgres
+        containerPort: 5432
+
+---
+kind: Module
+type: container
+name: hasura-storage
+varfile: .env
+image: nhost/hasura-storage:0.2.3
+services:
+  - name: hasura-storage
+    args:
+      - serve
+    env:
+      PUBLIC_URL: http://${var.baseHost}
+      HASURA_METADATA: 0
+      HASURA_ENDPOINT: http://graphql-engine:8080/v1
+      HASURA_GRAPHQL_ADMIN_SECRET: ${var.HASURA_GRAPHQL_ADMIN_SECRET}
+      S3_ACCESS_KEY: ${var.STORAGE_ACCESS_KEY}
+      S3_SECRET_KEY: ${var.STORAGE_SECRET_KEY}
+      S3_ENDPOINT: http://minio:8484
+      S3_BUCKET: nhost
+      POSTGRES_MIGRATIONS: 1
+      POSTGRES_MIGRATIONS_SOURCE: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    ports:
+      - name: http
+        containerPort: 8080
+    ingresses:
+      - path: /v1/storage(/|$)(.*)
+        port: http
+        annotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /v1/$2
+    dependencies:
+      - postgres
+      - graphql-engine
+      - minio
+---
+kind: Module
+type: container
+name: minio
+varfile: .env
+image: minio/minio:RELEASE.2021-09-24T00-24-24Z
+services:
+  - name: minio
+    command:
+      - /bin/sh
+      - -c
+    args:
+      - "mkdir -p /data/nhost && /opt/bin/minio server --address :8484 /data"
+    env:
+      MINIO_ROOT_USER: ${var.STORAGE_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${var.STORAGE_SECRET_KEY}
+    ports:
+      - name: minio
+        containerPort: 8484
+---
+kind: Module
+type: container
+name: hasura-auth
+varfile: .env
+image: nhost/hasura-auth:latest
+services:
+  - name: hasura-auth
+    ports:
+      - name: http
+        containerPort: 4000
+    dependencies:
+      - postgres
+      - graphql-engine
+    env:
+      AUTH_HOST: "0.0.0.0"
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      HASURA_GRAPHQL_GRAPHQL_URL: http://graphql-engine:8080/v1/graphql
+      HASURA_GRAPHQL_JWT_SECRET: ${var.HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${var.HASURA_GRAPHQL_ADMIN_SECRET}
+      AUTH_CLIENT_URL: ${var.baseHost}
+      AUTH_SMTP_HOST: mailhog
+      AUTH_SMTP_PORT: 1025
+      AUTH_SMTP_USER: user
+      AUTH_SMTP_PASS: password
+      AUTH_SMTP_SENDER: mail@example.com
+    ingresses:
+      - path: /v1/auth(/|$)(.*)
+        port: http
+        annotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /$2

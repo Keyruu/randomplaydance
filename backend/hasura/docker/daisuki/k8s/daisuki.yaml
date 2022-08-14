@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sync-db
+spec:
+  schedule: "0 4 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: pgloader
+              image: harbor.exentra.io/garden/${modules.pgloader.outputs.local-image-id}
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: MARIADB_USER
+                  value: root
+                - name: MARIADB_PASS
+                  value: mariadb
+                - name: MARIADB_HOST
+                  value: "127.0.0.1"
+                - name: MARIADB_DB
+                  value: kpop
+                - name: POSTGRES_USER
+                  value: postgres
+                - name: POSTGRES_PASS
+                  value: postgres
+                - name: POSTGRES_HOST
+                  value: daisuki-postgres:5432
+                - name: POSTGRES_DB
+                  value: kpop
+              command:
+                - /bin/start.sh
+            - name: mariadb
+              image: mariadb
+              env:
+                - name: MARIADB_ROOT_PASSWORD
+                  value: mariadb
+                - name: MARIADB_DATABASE
+                  value: kpop
+              volumeMounts:
+                - mountPath: /docker-entrypoint-initdb.d
+                  name: init
+              command: ["/bin/sh", "-c"]
+              args:
+                - "(timeout 2m docker-entrypoint.sh mysqld; exit 0)"
+              ports:
+                - containerPort: 3306
+          restartPolicy: Never
+          initContainers:
+            - name: fetch
+              image: harbor.exentra.io/garden/${modules.fetch.outputs.local-image-id}
+              volumeMounts:
+                - mountPath: /data
+                  name: init
+
+          volumes:
+            - name: init
+              emptyDir: {}

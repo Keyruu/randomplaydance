@@ -1,0 +1,56 @@
+---
+kind: Module
+type: container
+name: daisuki-graphql-engine
+image: hasura/graphql-engine:v2.8.3
+varfile: .env
+services:
+  - name: daisuki-graphql-engine
+    ports:
+      - name: http
+        containerPort: 8080
+    ingresses:
+      - hostname: daisuki.${var.baseHost}
+        path: /
+        port: http
+    env:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@daisuki-postgres:5432/kpop
+      # HASURA_GRAPHQL_JWT_SECRET: ${var.HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${var.HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
+      HASURA_GRAPHQL_LOG_LEVEL: debug
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+    dependencies:
+      - daisuki-postgres
+
+---
+kind: Module
+type: container
+name: daisuki-postgres
+image: postgres
+services:
+  - name: daisuki-postgres
+    env:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kpop
+    ports:
+      - name: postgres
+        containerPort: 5432
+
+---
+kind: Module
+type: container
+name: fetch
+dockerfile: mariadb/fetch/Dockerfile
+---
+kind: Module
+type: container
+name: pgloader
+dockerfile: mariadb/pgloader/Dockerfile
+---
+kind: Module
+type: kubernetes
+name: cronjob
+build:
+  dependencies: ["fetch", "pgloader"]
+files: ["k8s/daisuki.yaml"]

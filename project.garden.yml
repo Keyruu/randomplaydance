@@ -1,0 +1,18 @@
+kind: Project
+name: menuki
+environments:
+  - name: default
+    defaultNamespace: menuki-${local.username}
+variables:
+  baseHost: menuki.${local.username}.garden.hive.paf.exentra.de
+providers:
+  - name: kubernetes
+    context: hive
+    buildMode: local-docker
+    defaultHostname: ${var.baseHost}
+    deploymentRegistry:
+      hostname: harbor.exentra.io # <--- the hostname of your registry
+      namespace: garden # <--- the namespace to use within your registry
+    imagePullSecrets:
+      - name: garden-config
+        namespace: default

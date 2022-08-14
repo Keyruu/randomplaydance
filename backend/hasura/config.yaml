@@ -1,5 +1,5 @@
 version: 3
-endpoint: http://localhost:1337
+endpoint: http://menuki.lro.garden.hive.paf.exentra.de
 metadata_directory: metadata
 actions:
   kind: synchronous
